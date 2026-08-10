@@ -9,7 +9,7 @@
 </p>
 
 <p align="center">
-  <img src="https://img.shields.io/github/stars/Green-PT/peter?style=flat-square&color=111111&label=stars" alt="Stars">
+  <img src="https://img.shields.io/github/stars/robertkeus/peter?style=flat-square&color=111111&label=stars" alt="Stars">
   <img src="https://img.shields.io/badge/runtime-Claude%20Code-111111?style=flat-square" alt="Runtime: Claude Code">
   <img src="https://img.shields.io/badge/license-MIT-111111?style=flat-square" alt="MIT license">
 </p>
@@ -82,7 +82,7 @@ builder. The two auditors never write; they return verdicts.
 The most effort peter will ever ask of you:
 
 ```bash
-git clone https://github.com/Green-PT/peter && cd peter && ./install.sh
+git clone https://github.com/robertkeus/peter && cd peter && ./install.sh
 ```
 
 That's it. `~/.claude` is not version-controlled; this repo is the tracked
@@ -144,8 +144,8 @@ builders already write minimal code — it's the house standard.
 
 <a href="https://www.star-history.com/green-pt/peter#history">
  <picture>
-   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/chart?repos=Green-PT/peter&type=Date&theme=dark" />
-   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/chart?repos=Green-PT/peter&type=Date" />
-   <img alt="Star History Chart" src="https://api.star-history.com/chart?repos=Green-PT/peter&type=Date" />
+   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/chart?repos=robertkeus/peter&type=Date&theme=dark" />
+   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/chart?repos=robertkeus/peter&type=Date" />
+   <img alt="Star History Chart" src="https://api.star-history.com/chart?repos=robertkeus/peter&type=Date" />
  </picture>
 </a>
