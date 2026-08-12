@@ -12,8 +12,8 @@
 - [x] Publish the work graph, commits, gate logs, human interventions, and cost data.
 - [x] Record a short terminal demo from the same reproducible run.
 - [x] Replace the illustrative README transcript with the public run.
-- [ ] Confirm the documented Claude Code version on a clean account or machine.
-- [ ] Create and smoke-test the `v0.1.0` release archive.
+- [x] Confirm the documented Claude Code version on a clean account or machine.
+- [x] Create and smoke-test the `v0.1.0` release archive.
 
 ## GitHub metadata
 

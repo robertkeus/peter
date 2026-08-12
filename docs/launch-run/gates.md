@@ -14,6 +14,9 @@ Observed on 2026-08-12 at 15:27 UTC:
 | `npm run build` | pass, fixture build complete |
 | `npm run e2e` | pass: 9, fail: 0, duration: 3.6 s |
 
+Peter's own installer and the exact Claude Code 2.1.228 smoke test also passed on
+fresh [Ubuntu and macOS GitHub-hosted runners](https://github.com/robertkeus/peter/actions/runs/31613021955).
+
 The run itself executed the same five-gate sequence at baseline, during task
 iterations, and at epic close. Its committed result and acceptance-criterion
 map are in the
