@@ -75,7 +75,22 @@ scores low, stays a loop, and still needs this.
   and what talks to what) in `spec.md` in epic mode, inline in loop mode.
   Builders inherit it; no task re-derives it.
 
-Now the gate. Run `decompose` and score its seven signals. Most tasks are a loop.
+Now the gate. Score these seven signals; Peter has no dependency on another
+skill. Give one point for each right-column condition. Most tasks are a loop.
+
+| Signal | 0 | 1 |
+|---|---|---|
+| Shape | one job, one finish line | distinct specialties hand off |
+| Parallelism | sequential steps | fan-out then join |
+| Tools/model | same throughout | different model or tool allowlist |
+| Context | fits one window | would overflow the parent window |
+| Control flow | free-roam is safe | routing must be explicit and auditable |
+| Failure | a bad step can retry locally | one bad step must not poison the rest |
+| Verification | the implementer can self-check | a separate reviewer must check it |
+
+No independent verifier is a hard stop for work whose acceptance bar requires
+one. If the work fits one context and needs no different tools, choose loop
+regardless of marketing words in the request.
 
 - **Loop (score 0–4)** — no subagents, no run directory, no branch, no work
   graph. Spec and bars inline, implement inline, run the machine gates (§G),
@@ -291,11 +306,13 @@ neither ever pauses the run.
 
 1. Full test suite once more — a regression here is a stop condition, not a
    footnote.
-2. Full audit sweep: `security-auditor` + `ui-auditor` over all changed routes,
-   regardless of per-task audits. Both verdicts must be `pass` to close the
-   epic, and both land in the epic `closed` record as `audits` — or
-   `not_run: <reason>`, which keeps the epic out of Done. A close record
-   silent on audits is not a close.
+2. Full audit sweep over every applicable scope, regardless of per-task audits:
+   `security-auditor` for auth, data, or external input; `ui-auditor` for
+   rendered UI. Every applicable verdict must be `pass` to close the epic.
+   Record a non-applicable scope as `not_applicable: <reason>` and an applicable
+   audit that could not run as `not_run: <reason>`; `not_run` keeps the epic out
+   of Done. Both scope keys land in the epic `closed` record as `audits`. A close
+   record silent on audits is not a close.
 3. Append `closed` for the epic — carrying `commits[]`, `open[]` (the
    backlog), and `audits` — then write `runs/<epic-id>/report.md`, including a
    **Deviations** section: every departure from this protocol with its cause,
@@ -467,7 +484,7 @@ prevent.
 - The work needs a 5th specialty — a **tool or model none of the four roles has**
   (mobile simulator, notebook runtime, a different provider). A non-web domain is
   not a 5th specialty: CLIs, libraries, data pipelines, and infra scripts are
-  `backend-builder`'s. Re-run the `decompose` gate; never invent a node mid-run.
+  `backend-builder`'s. Re-score the §0 gate; never invent a node mid-run.
 
 On any stop, in order: the status table (§S); the exact failing clauses or
 the open question — closed, filed, and blocked all read off the table; then
@@ -490,18 +507,20 @@ downgraded to make it pass.** Never relax a bar to close the loop; never mark
 
 ## Done
 
-Ship only when: machine gates green including E2E, epic-close audit verdicts
-both `pass`, no unresolved `critical`/`high`. Then report, in this order:
+Ship only when: machine gates green including E2E, every applicable epic-close
+audit verdict is `pass`, and no unresolved `critical`/`high` remains. Then
+report, in this order:
 
 1. What was built, in two sentences.
 2. The final status table (§S) — every task's end state.
 3. Gate results — unit/typecheck/lint/build, E2E (passed/failed/skipped +
-   acceptance-criteria coverage map), security verdict + score, UI verdict + score.
+   acceptance-criteria coverage map), security and UI verdict + score or their
+   explicit `not_applicable` reasons.
 4. What was deliberately not done, every protocol deviation with its cause,
    any quarantined test, and any accepted-risk finding with its reason.
 5. The proposed merge command.
 
-**An audit that could not run keeps the build out of Done.** No dispatch
+**An applicable audit that could not run keeps the build out of Done.** No dispatch
 available, app unreachable, no auditor — report `security: not run` or
 `ui: not run` with the reason and say plainly that the bar was never applied.
 A missing verdict is not a passing one. A degraded run produces a change that
@@ -516,7 +535,7 @@ Run directory, `graph.jsonl`, zone memory, and the single-writer table:
 
 Stable roles in `~/.claude/agents/` — the work graph in `graph.jsonl` is
 per-epic and disposable; this is not (see
-`~/.claude/skills/decompose/references/graph-engineering.md`):
+`references/graph-engineering.md`):
 
 ```
                     [parent — orchestrator]
