@@ -424,7 +424,8 @@ the note keeping its `gates:`/`needs-input:` prefix. Rows are in-scope tasks
 in file order; backlog is the header count, never rows; blocked rows always
 show. The Now/Next line ends every table. Print and move on — a table never
 waits for a reply. Only at a stop does it arrive with the failing clauses or
-the open question and **what the operator must do to continue** — then halt.
+the open question, followed by the **Next steps** bullets (spec under Stop
+conditions) — then halt.
 
 **A stop is announced in the turn it happens**, before anything else and without
 being asked. A run that halts and says nothing reads exactly like a run still
@@ -468,8 +469,22 @@ prevent.
   not a 5th specialty: CLIs, libraries, data pipelines, and infra scripts are
   `backend-builder`'s. Re-run the `decompose` gate; never invent a node mid-run.
 
-On any stop: the status table (§S), then the exact failing clauses or the
-open question — closed, filed, and blocked all read off the table. **A failed gate reported honestly beats a passed gate that was
+On any stop, in order: the status table (§S); the exact failing clauses or
+the open question — closed, filed, and blocked all read off the table; then
+**Next steps** — 2–4 bullets, each one concrete operator action, tailored to
+the stop cause, never boilerplate. Always include:
+
+- **How to continue** — re-invoke the skill with the same goal; resume folds
+  the graph and picks up here. For a `gates:` block, add the re-entry move:
+  say "re-open Tn" (an operator-appended `open` record) and name the failing
+  clause to read first. For `needs-input:`, the bullet is the question
+  itself, with the options when they are enumerable.
+- **One sanity check** worth running before continuing — the suite, the last
+  commit's diff, or the app on the epic branch — as a runnable command.
+- **Anything only the operator can do** (a push, a config change, a file
+  outside the project): the exact command or change. Omit when none.
+
+**A failed gate reported honestly beats a passed gate that was
 downgraded to make it pass.** Never relax a bar to close the loop; never mark
 `pass` on a verdict the auditor didn't give.
 
