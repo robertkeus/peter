@@ -116,5 +116,6 @@ first, then task records as usual, then re-close with updated
 `zones/backend.md`, `zones/frontend.md` — appended by their builder;
 `zones/security.md`, `zones/ui.md` — appended by the parent from auditor
 `zone_facts`. Durable domain facts only, never run-specific state; parent
-prunes past ~a page. Cross-epic — this is what makes run 300's auditor worth
-more than run 1's. Details: `references/state.md`.
+prunes past ~a page, moving cut lines to `zones/<name>.archive.md` rather than
+deleting them. Cross-epic — this is what makes run 300's auditor worth more
+than run 1's. Details: `references/state.md`.

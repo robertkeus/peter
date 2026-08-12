@@ -223,8 +223,9 @@ While ready tasks exist and bounds hold:
    - `frontend-builder` — everything that renders: UI, components, state,
      styling, and their tests
    Each prompt carries absolute paths, the contract, the task's `criteria[]`,
-   and its zone memory (`zones/<zone>.md`) — pruned first if past ~a page;
-   every dispatch pays the file's length. Nodes inherit nothing.
+   and its zone memory (`zones/<zone>.md`) — pruned first if past ~a page,
+   cut lines appended to `zones/<zone>.archive.md`, never deleted; every
+   dispatch pays the file's length. Nodes inherit nothing.
    **Overlapping zones are single-writer.** When the zone map is not disjoint, a
    `zone: both` task goes to **one** builder owning the whole task. The fence is
    what makes a parallel pair safe, and a shared file has no fence — two builders
@@ -292,7 +293,8 @@ neither ever pauses the run.
    **Deviations** section: every departure from this protocol with its cause,
    or `none`. A closed epic is reopened by appending an epic `open` record
    before any further task work — never close tasks onto a closed epic.
-4. Prune any `zones/*.md` past ~a page.
+4. Prune any `zones/*.md` past ~a page — cut lines move to
+   `zones/<name>.archive.md`, never deleted.
 5. Print the **proposed** merge command, naming `runs/<epic-id>/` and `zones/`
    as part of what it carries across, so keeping or stripping the process
    artifacts is a decision rather than a surprise. Never run it.

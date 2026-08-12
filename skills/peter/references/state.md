@@ -46,6 +46,7 @@ debuggable and **resumable** after the subagent contexts are gone: fold
 | `report.md` | parent | — |
 | `zones/backend.md`, `zones/frontend.md` | the owning builder | that node, parent |
 | `zones/security.md`, `zones/ui.md` | parent, from auditor `zone_facts` | that auditor, parent |
+| `zones/*.archive.md` | parent (pruned lines only) | on-demand grep — never dispatched |
 | git commits, branches | parent — one commit per task, epic branch only | all |
 
 Two nodes never write one path. Frontend and backend split on directory, fixed
@@ -86,6 +87,14 @@ component library, recurring gotchas, the threat model. A few terse lines per
 fact; never run-specific state, never a narrative of what a builder just did.
 The parent prunes each past ~a page **before it rides in a dispatch prompt**,
 not only at epic close — every dispatch pays the file's length.
+
+**Pruning moves, it never deletes.** Cut lines are appended verbatim to
+`zones/<name>.archive.md`, which is never read into a prompt and so costs
+nothing per dispatch. The cap exists because of dispatch cost, not storage
+cost — once a fact is out of the live file it is free to keep forever. The
+archive is grepped on demand, and a fact that proves live again is promoted
+back into `zones/<name>.md` by hand. Without this, epic 7 pays to rediscover
+what epic 3 already learned.
 
 ## Handoff
 
