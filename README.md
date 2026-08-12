@@ -83,12 +83,23 @@ that needs to exist, say the minimum about it — and
 [ESON](https://github.com/Green-PT/honey-eson), the wire format every subagent
 return comes back in.
 
-**Why it cuts tokens.** Output is the bill. Builders write only the code the
-spec demands (stdlib before custom, nothing speculative) and skip the
-narration; auditors return verdicts, not essays. Fewer tokens per unit of
-shipped work — not fewer gates. An epic that runs tests, an OWASP pass and a
-WCAG pass still costs more than a one-shot that skips them and ships a 500;
-what's gone is the waste, not the rigor.
+**What is measured.** Honey's pinned, paired 23-task benchmark reduced output
+by 29% (`p=.020`) and code by 43% (`p<.001`) on Claude Opus 4.8; on GPT-5.5,
+output fell 20% (`p=.004`) and code 18% (`p<.001`). ESON's deterministic
+five-document handoff benchmark used 3,151 o200k tokens versus 4,395 for
+compact JSON, a 28% reduction after lossless round-trip checks. Total Honey
+cost was a statistical tie on both providers because its prompt adds input and
+caching differed. Peter has no control run without Honey and ESON, so these are
+upstream component results, not a claim that Peter's $27.63 proof run would
+have cost a specific amount otherwise. See the
+[reproducible evidence, exact revisions, and limits](docs/token-efficiency.md).
+
+**Why use them.** Builders write only the code the spec demands (stdlib before
+custom, nothing speculative) and skip narration; auditors return verdicts, not
+essays. Fewer output tokens and lines per unit of shipped work — not fewer
+gates. An epic that runs tests, an OWASP pass and a WCAG pass can still cost
+more than a one-shot that skips them and ships a 500; what's targeted is waste,
+not rigor.
 
 **Why runs have more context.** Every subagent return lands in the parent's
 context window and stays there for the rest of the drain. A narrated diff
@@ -107,12 +118,14 @@ src/checkout/api.ts	+stripe intent endpoint
 src/checkout/api.test.ts	+4 cases
 ```
 
-That's a whole task return. Cheaper than JSON on the wire — no braces or
-quotes per row — and self-checking: `[2]` declares the row count, so a
+That's a whole task return. On record-heavy, cached handoffs, ESON removes
+repeated keys and JSON punctuation; `[2]` also declares the row count, so a
 truncated return is detected and re-requested instead of silently losing
-findings. One carve-out is absolute: anything touching auth, money,
-migrations, deletes, or data loss keeps its full text. Honey compresses
-everything except the things that hurt when compressed.
+findings. It is not a universal win: its primer never amortizes without prompt
+caching and scalar-only messages can be larger than compact JSON. One carve-out
+is absolute: anything touching auth, money, migrations, deletes, or data loss
+keeps its full text. Honey compresses everything except the things that hurt
+when compressed.
 
 ESON is the message format only — `graph.jsonl` stays JSONL.
 
@@ -183,10 +196,15 @@ tests/install.sh                 installer integration coverage
 
 **Why "peter"?**
 Named for [Peter Steinberger](https://x.com/steipete), whose July 2026
-question — "Are we still talking loops or did we shift to graphs yet?" —
-sparked the graph-engineering framing this repo implements: a stable org graph
-of specialist roles, a per-epic work graph of dependency-ordered tasks. No
-affiliation or endorsement — just credit for the frame.
+[question](https://x.com/steipete/status/2078277297791189132) — "Are we still
+talking loops or did we shift to graphs yet?" — supplied no definition. Peter
+is one concrete interpretation, informed by writeups from
+[Carlos E. Perez](https://x.com/IntuitMachine/article/2078419526354378975),
+[Opinion AI](https://emergingai.substack.com/p/graph-engineering-the-next-step-after),
+and [AI Builder Club](https://www.aibuilderclub.com/blog/graph-engineering-guide-2026):
+a stable role graph of specialists plus a persistent work graph of
+dependency-ordered tasks. No affiliation or endorsement — just credit for the
+prompt and the surrounding discussion.
 
 **Is it a framework?**
 No. A skill, four agent files, and a JSONL contract. Claude Code is the
