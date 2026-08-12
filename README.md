@@ -6,7 +6,7 @@
 
 <p align="center">
   <em>You describe it. He graphs it. He ships it.</em><br>
-  <sub>Develop like <a href="#faq">Peter Steinberger</a> — and cut the token bill doing it.</sub>
+  <sub>Persistent work graphs and independently checked gates for Claude Code.</sub>
 </p>
 
 <p align="center">
@@ -16,7 +16,7 @@
 </p>
 
 <p align="center">
-  <strong>One goal in &middot; one gated commit per task &middot; zero babysitting</strong><br>
+  <strong>One goal in &middot; one gated commit per task &middot; bounded autonomy</strong><br>
   <sub>Autonomous epic builds for Claude Code — graph engineering with the bars built in.
   Not a framework, not a runtime: a skill, four agent files, and a JSONL contract.
   The parent session is the runtime.</sub>
@@ -24,18 +24,18 @@
 
 ---
 
-You know him. You describe a feature at nine; by noon there's a branch with a
-commit per task, each one green. He doesn't ask whether you want tests. There
-are tests. There's an OWASP pass. The contrast ratios check out.
+Peter is a Claude Code skill for work that is too large or failure-prone for one
+prompt-and-hope loop. It decomposes a goal into a persistent dependency graph,
+runs each task through project checks, and produces one traceable commit per
+completed task. Repeated failures, missing credentials, and unresolved product
+decisions return control to the operator instead of retrying forever.
 
-Peter puts him inside Claude Code.
+> **Pre-release:** the orchestration contract may change before `v0.1.0`. A
+> reproducible public example run is still required before launch.
 
-## Before / after
+## Output shape
 
-You ask for a checkout flow. Your agent writes 800 lines, says "All done! 🎉",
-and the first click 500s. No tests, no migrations, `main` is broken.
-
-With peter:
+This is illustrative output, not a benchmark or completed public run:
 
 ```
 > /peter checkout flow with Stripe test mode
@@ -50,20 +50,19 @@ f3a91c2 task-9: e2e — happy path + declined card
 
 ## How it works
 
-Every task — loop or epic — goes through the same enforced sequence. No
-implementation code before the bars exist:
+No implementation code starts before its pass/fail bars exist:
 
 ```
 1. Spec + pass/fail bars   → written first, or nothing gets built
 2. Implement               → the minimum that meets the bars
 3. Machine gates           → unit, typecheck, lint, build, e2e
                              (real server, real database — no mocks)
-4. Security audit          → OWASP Top 10:2025, read-only verdict
-5. UI audit                → WCAG 2.2 AA + visual fidelity, read-only verdict
-6. Loop until green        → then exactly one commit
+4. Conditional audit       → security for trust boundaries; UI for rendered work
+5. Loop until green        → then exactly one commit
 ```
 
-Small changes run that loop once and stop.
+Small changes run that loop once and stop. Completed epics finish with the full
+test suite and both read-only audit passes when their prerequisites are available.
 
 Big goals become an **epic**: the goal is decomposed into a persistent work
 graph (`runs/<epic-id>/graph.jsonl`, append-only) of dependency-ordered tasks,
@@ -73,7 +72,7 @@ most the task in flight), discovered work filed as new tasks instead of
 scope-creeping the current one, until the epic closes or a stop condition hands
 control back.
 
-Implementation is zone-fenced across two builders: `backend-builder` owns
+Implementation is zone-fenced across two builders. `backend-builder` owns
 everything that doesn't render (API, CLI, library, pipeline, infra),
 `frontend-builder` owns everything that does. The write fence is what makes a
 parallel pair safe — a shared file has no fence, so co-located code goes to one
@@ -122,15 +121,30 @@ ESON is the message format only — `graph.jsonl` stays JSONL.
 
 ## Install
 
-The most effort peter will ever ask of you:
+Inspect the planned writes, then install:
 
 ```bash
-git clone https://github.com/robertkeus/peter && cd peter && ./install.sh
+git clone https://github.com/robertkeus/peter
+cd peter
+./install.sh --dry-run
+./install.sh
 ```
 
-That's it. `~/.claude` is not version-controlled; this repo is the tracked
-copy. `./install.sh pull` copies the other way, `./install.sh check` reports
-drift.
+The installer refuses to overwrite existing `skills/peter`, generated
+`skills/build`, or Peter agent files. `./install.sh --force` preserves collisions
+for restoration; `./install.sh uninstall` restores them. Forced replacement of
+files changed after installation also writes a timestamped copy under
+`~/.claude/peter-backups/`. Set `CLAUDE_CONFIG_DIR` to install somewhere other
+than `~/.claude`; the legacy `CLAUDE_HOME` variable remains supported.
+
+| Command | Effect |
+|---------|--------|
+| `./install.sh --dry-run` | Preview an install without writing files. |
+| `./install.sh` | Install, or update an unchanged Peter installation. |
+| `./install.sh --force` | Back up and replace reported collisions. |
+| `./install.sh check` | Report drift between the repository and installation. |
+| `./install.sh pull` | Copy installed Peter files back into the repository. |
+| `./install.sh uninstall` | Remove Peter and restore pre-install files. |
 
 ## Commands
 
@@ -146,7 +160,27 @@ skills/peter/references/         work-graph, state, eson wire format, e2e/securi
 agents/{backend,frontend}-builder.md   zone-fenced implementers
 agents/{security,ui}-auditor.md        read-only verdict-only auditors
 install.sh                       sync with ~/.claude
+tests/install.sh                 installer integration coverage
 ```
+
+## Requirements and limitations
+
+- A current Claude Code release with custom skills and subagents, plus Git and
+  Bash 3.2 or newer. The installer targets macOS and Linux; native Windows is
+  not tested.
+- The builders select Sonnet and the auditors select Opus. Your Claude plan must
+  provide those models. UI audits additionally require the `Claude_Browser` MCP
+  tools named in `agents/ui-auditor.md`; without them the UI verdict is not run.
+- Peter is prompt-level orchestration, not an operating-system sandbox. Run it
+  only in repositories and environments you are willing to let Claude Code
+  modify.
+- Autonomy is bounded. Ambiguous requirements, unavailable services, missing
+  credentials, operator-rejected dispatches, and repeated gate failures stop or
+  block work for human review.
+- Gates depend on the repository exposing runnable test, lint, build, E2E, and
+  audit prerequisites. Missing prerequisites are reported, not counted as passes.
+- Fewer handoff tokens do not guarantee a cheaper total run. Epics execute more
+  checks than a one-shot coding prompt; publish costs with the workload and model.
 
 ## FAQ
 
@@ -178,12 +212,4 @@ builders already write minimal code — it's the house standard.
 
 [MIT](LICENSE). Use it, fork it, ship with it.
 
-## Star History
-
-<a href="https://www.star-history.com/green-pt/peter#history">
- <picture>
-   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/chart?repos=robertkeus/peter&type=Date&theme=dark" />
-   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/chart?repos=robertkeus/peter&type=Date" />
-   <img alt="Star History Chart" src="https://api.star-history.com/chart?repos=robertkeus/peter&type=Date" />
- </picture>
-</a>
+Contributions start with [CONTRIBUTING.md](CONTRIBUTING.md).
