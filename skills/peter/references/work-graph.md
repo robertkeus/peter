@@ -2,9 +2,8 @@
 
 The per-epic work graph: what needs doing right now, dependency-ordered,
 append-only, committed. The org graph (stable roles) lives in
-`~/.claude/agents/`; terminology and the patterns adopted here:
-`~/.claude/skills/decompose/references/graph-engineering.md`. This file is the
-runtime contract.
+`~/.claude/agents/`; terminology and the patterns adopted here are documented
+in `graph-engineering.md`. This file is the runtime contract.
 
 ## Records
 
@@ -45,7 +44,7 @@ Fields:
 | `sha` | on close | the task's single commit sha — real and existing, never `"pending"` |
 | `discovered-from` | discovered | the task or sweep whose run surfaced this |
 | `evidence` | no | discovered tasks: the observation that motivated filing, verbatim — never mixed into `criteria` |
-| `audits` | epic close | sweep verdicts: `{"security":{"verdict","score"},"ui":{"verdict","score"}}`, or `"not_run: <reason>"` |
+| `audits` | epic close | both scope keys; each is a verdict object, `"not_applicable: <reason>"`, or `"not_run: <reason>"` |
 | `note` | no | one line of context; `fix:` hypotheses live here, never in `criteria`. On `blocked`, prefixed: `gates: <clauses>` \| `needs-input: <question>` |
 
 `criteria` are checkable against a diff — bars, not findings. A pasted finding
@@ -78,7 +77,7 @@ arrives:
 
 | Evidence | Move |
 |---|---|
-| Scope expands | append a new task (`discovered-from` set); if it needs a 5th *specialty*, stop — re-run the `decompose` gate |
+| Scope expands | append a new task (`discovered-from` set); if it needs a 5th *specialty*, stop — re-score the §0 gate |
 | Tasks converge / one becomes moot | append `closed` with `note` `"merged into <id>"` or `"moot: <why>"` — never delete the line |
 | Task fails its gates twice | append `blocked`, `note` `gates: <clauses>`; stop condition |
 | A decision needs the operator | append `blocked`, `note` `needs-input: <question>`; stop condition |
@@ -105,8 +104,9 @@ unworked — the report lists what's left open.
 
 The epic `closed` record carries `commits[]`, `open[]` (every task not folding
 `closed` — backlog and `blocked` alike), and
-`audits` (§C2's sweep verdicts — `not_run: <reason>` keeps the epic out of
-Done). A close record silent on audits is not a close. A closed epic is not a
+`audits` (§C2's sweep results — `not_run: <reason>` keeps the epic out of Done;
+`not_applicable: <reason>` does not). A close record silent on audits is not a
+close. A closed epic is not a
 tombstone: to work its backlog later, append an epic `open` record (reopen)
 first, then task records as usual, then re-close with updated
 `commits[]`/`open[]`/`audits`.

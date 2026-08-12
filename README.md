@@ -165,12 +165,12 @@ tests/install.sh                 installer integration coverage
 
 ## Requirements and limitations
 
-- A current Claude Code release with custom skills and subagents, plus Git and
-  Bash 3.2 or newer. The installer targets macOS and Linux; native Windows is
-  not tested.
+- Claude Code 2.1.228 or newer with custom skills and subagents, plus Git,
+  Node.js with `npx`, Chrome, and Bash 3.2 or newer. The installer targets macOS
+  and Linux; native Windows is not tested.
 - The builders select Sonnet and the auditors select Opus. Your Claude plan must
-  provide those models. UI audits additionally require the `Claude_Browser` MCP
-  tools named in `agents/ui-auditor.md`; without them the UI verdict is not run.
+  provide those models. The UI auditor starts pinned Playwright MCP 0.0.79 with
+  `npx`; its first run may download that package.
 - Peter is prompt-level orchestration, not an operating-system sandbox. Run it
   only in repositories and environments you are willing to let Claude Code
   modify.
