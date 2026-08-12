@@ -68,7 +68,8 @@ Small changes run that loop once and stop.
 Big goals become an **epic**: the goal is decomposed into a persistent work
 graph (`runs/<epic-id>/graph.jsonl`, append-only) of dependency-ordered tasks,
 then drained on a dedicated `epic/<id>` branch — one task at a time through the
-gates above, one commit per task, discovered work filed as new tasks instead of
+gates above, one commit per task pushed as it lands (a dead machine costs at
+most the task in flight), discovered work filed as new tasks instead of
 scope-creeping the current one, until the epic closes or a stop condition hands
 control back.
 
@@ -77,6 +78,47 @@ everything that doesn't render (API, CLI, library, pipeline, infra),
 `frontend-builder` owns everything that does. The write fence is what makes a
 parallel pair safe — a shared file has no fence, so co-located code goes to one
 builder. The two auditors never write; they return verdicts.
+
+## Honey + ESON
+
+Two standards run through every agent in the graph:
+[Honey](https://github.com/Green-PT/honey-for-devs) — write the minimum code
+that needs to exist, say the minimum about it — and
+[ESON](https://github.com/Green-PT/honey-eson), the wire format every subagent
+return comes back in.
+
+**Why it cuts tokens.** Output is the bill. Builders write only the code the
+spec demands (stdlib before custom, nothing speculative) and skip the
+narration; auditors return verdicts, not essays. Fewer tokens per unit of
+shipped work — not fewer gates. An epic that runs tests, an OWASP pass and a
+WCAG pass still costs more than a one-shot that skips them and ships a 500;
+what's gone is the waste, not the rigor.
+
+**Why runs have more context.** Every subagent return lands in the parent's
+context window and stays there for the rest of the drain. A narrated diff
+burns that window; an ESON manifest is a few lines. Less window spent per task
+means more tasks fit before compaction — late tasks in a long epic still see
+the spec, the graph, and every verdict that came before.
+
+**Why agent-to-agent is more efficient.** The parent never parses prose — it
+branches on fields:
+
+```
+!eson/1
+status=green
+files[2]{path,change}
+src/checkout/api.ts	+stripe intent endpoint
+src/checkout/api.test.ts	+4 cases
+```
+
+That's a whole task return. Cheaper than JSON on the wire — no braces or
+quotes per row — and self-checking: `[2]` declares the row count, so a
+truncated return is detected and re-requested instead of silently losing
+findings. One carve-out is absolute: anything touching auth, money,
+migrations, deletes, or data loss keeps its full text. Honey compresses
+everything except the things that hurt when compressed.
+
+ESON is the message format only — `graph.jsonl` stays JSONL.
 
 ## Install
 
@@ -125,17 +167,7 @@ It loops until green; a task that can't get there is filed as blocked and the
 drain moves on. Stop conditions hand control back instead of burning tokens.
 
 **Why are the subagent replies so terse?**
-[Honey](https://github.com/Green-PT/honey-for-devs) is the house standard:
-builders write the minimum code that satisfies the spec, durable prose stays
-terse, and every subagent return is an [ESON](https://github.com/Green-PT/honey-eson)
-handoff — the parent branches on fields and treats declared counts as
-truncation checksums. ESON is the message format only; `graph.jsonl` stays
-JSONL.
-
-That's what "cut the token bill" means: fewer tokens per unit of shipped work
-— minimal code, terse prose, structured handoffs instead of narrated diffs.
-It does not mean fewer gates. An epic that runs tests, an OWASP pass and a
-WCAG pass costs more than a one-shot that skips them and ships a 500.
+That's the house standard — see [Honey + ESON](#honey--eson).
 
 **Can I use it with [ponytail](https://github.com/DietrichGebert/ponytail)?**
 Different layers, same family: ponytail shrinks what one agent writes; peter
