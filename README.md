@@ -30,23 +30,20 @@ runs each task through project checks, and produces one traceable commit per
 completed task. Repeated failures, missing credentials, and unresolved product
 decisions return control to the operator instead of retrying forever.
 
-> **Pre-release:** the orchestration contract may change before `v0.1.0`. A
-> reproducible public example run is still required before launch.
+## Public proof run
 
-## Output shape
+![Peter public proof run](docs/launch-run/peter-launch.gif)
 
-This is illustrative output, not a benchmark or completed public run:
+Peter built a complete reading-list vertical slice from one contract in a
+[pinned public fixture](https://github.com/robertkeus/peter-launch-fixture/tree/ed3243ce70340eab73ed20d3956dde7efc14f64b):
+3 planned tasks completed, 0 blocked, 4 audit findings filed as backlog, and 0
+human interventions. Final gates were 33/33 unit/integration tests and 9/9 E2E;
+the full-scope security and UI audits passed 8/10 and 9/10 after using their two
+bounded repair loops. The run took 1:27:35 and Claude Code reported $27.63.
 
-```
-> /peter checkout flow with Stripe test mode
-
-epic/checkout-flow · 9 tasks · draining unattended
-
-$ git log --oneline epic/checkout-flow
-f3a91c2 task-9: e2e — happy path + declined card
-8d02b4e task-8: checkout UI against the fixed API contract
-…                 every commit: gates green, audits pass
-```
+Read the [full reproducible run](docs/launch-run-template.md), inspect the
+[baseline-to-result diff](https://github.com/robertkeus/peter-launch-fixture/compare/ed3243ce70340eab73ed20d3956dde7efc14f64b...9d01a0aba390948f9e99beaeeca961b5c0a29f73),
+or open its [work graph and audit evidence](https://github.com/robertkeus/peter-launch-fixture/tree/9d01a0aba390948f9e99beaeeca961b5c0a29f73/runs/reading-list).
 
 ## How it works
 

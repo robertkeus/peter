@@ -7,11 +7,11 @@
 - [x] Dry-run, uninstall, drift detection, and installer integration tests exist.
 - [x] README distinguishes bounded autonomy from unconditional hands-off operation.
 - [x] Limitations and contribution instructions are public.
-- [ ] Run Peter end-to-end against a small public repository at a pinned commit.
-- [ ] Complete `docs/launch-run-template.md` with unedited observed results.
-- [ ] Publish the work graph, commits, gate logs, human interventions, and cost data.
-- [ ] Record a short terminal demo from the same reproducible run.
-- [ ] Replace the illustrative README transcript with the public run.
+- [x] Run Peter end-to-end against a small public repository at a pinned commit.
+- [x] Complete `docs/launch-run-template.md` with unedited observed results.
+- [x] Publish the work graph, commits, gate logs, human interventions, and cost data.
+- [x] Record a short terminal demo from the same reproducible run.
+- [x] Replace the illustrative README transcript with the public run.
 - [ ] Confirm the documented Claude Code version on a clean account or machine.
 - [ ] Create and smoke-test the `v0.1.0` release archive.
 

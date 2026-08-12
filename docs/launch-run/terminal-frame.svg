@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="540" viewBox="0 0 960 540">
+  <rect width="960" height="540" rx="18" fill="#17191d"/>
+  <rect width="960" height="48" rx="18" fill="#25282e"/>
+  <rect y="30" width="960" height="18" fill="#25282e"/>
+  <circle cx="26" cy="24" r="7" fill="#ff5f57"/>
+  <circle cx="50" cy="24" r="7" fill="#febc2e"/>
+  <circle cx="74" cy="24" r="7" fill="#28c840"/>
+  <text x="480" y="30" text-anchor="middle" fill="#aeb5c0" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="14">peter · public proof run</text>
+  <text x="52" y="116" fill="#74808f" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="22">{{STAMP}} UTC</text>
+  <text x="52" y="214" fill="#f5f7fa" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="30" font-weight="700">{{TITLE}}</text>
+  <text x="52" y="270" fill="#66d9c8" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="22">{{SUBTITLE}}</text>
+  <text x="52" y="456" fill="#7f8793" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="17">github.com/robertkeus/peter-launch-fixture</text>
+  <rect x="52" y="490" width="856" height="4" rx="2" fill="#30343b"/>
+  <rect x="52" y="490" width="{{PROGRESS}}" height="4" rx="2" fill="#66d9c8"/>
+</svg>
