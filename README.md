@@ -5,7 +5,8 @@
 <h1 align="center">Peter</h1>
 
 <p align="center">
-  <em>You describe it. He graphs it. He ships it.</em>
+  <em>You describe it. He graphs it. He ships it.</em><br>
+  <sub>Develop like <a href="#faq">Peter Steinberger</a> — and cut the token bill doing it.</sub>
 </p>
 
 <p align="center">
@@ -130,6 +131,11 @@ terse, and every subagent return is an [ESON](https://github.com/Green-PT/honey-
 handoff — the parent branches on fields and treats declared counts as
 truncation checksums. ESON is the message format only; `graph.jsonl` stays
 JSONL.
+
+That's what "cut the token bill" means: fewer tokens per unit of shipped work
+— minimal code, terse prose, structured handoffs instead of narrated diffs.
+It does not mean fewer gates. An epic that runs tests, an OWASP pass and a
+WCAG pass costs more than a one-shot that skips them and ships a 500.
 
 **Can I use it with [ponytail](https://github.com/DietrichGebert/ponytail)?**
 Different layers, same family: ponytail shrinks what one agent writes; peter
