@@ -8,7 +8,8 @@ description: >-
   WCAG 2.2 AA auditors, looping until green. Bigger goals become an epic: the
   goal is decomposed into a persistent work graph (runs/<epic-id>/graph.jsonl)
   of dependency-ordered tasks, then drained autonomously on a dedicated epic
-  branch — one task at a time through the same gates, one commit per task,
+  branch — one task at a time through the same gates, one commit per task
+  pushed as it lands,
   discovered work filed as new tasks for later, until the epic is done or a
   stop condition fires. Use whenever the user asks to build, implement, or ship
   an app, feature, frontend, backend, or full-stack change and wants it
@@ -185,8 +186,10 @@ Emit `runs/<epic-id>/graph.jsonl`: one epic record plus task records with
 ### A3. Branch
 
 Create or switch to `epic/<epic-id>` before touching anything. Never commit to
-the default branch for the rest of the run. Never merge, never push — the merge
-is the user's, proposed as text in `report.md`.
+the default branch for the rest of the run. The epic branch pushes to origin as
+it goes (A5, B8); the default branch is never pushed, and never merge — the
+merge is the user's, proposed as text in `report.md`. No remote → skip every
+push, note it once at A5, and record it in `report.md`.
 
 ### A4. Bars first, then code
 
@@ -199,7 +202,8 @@ Unmapped criteria fail the gate.
 
 Commit `spec.md` + `graph.jsonl` on the epic branch (`<epic-id>: plan`) before
 the first dispatch — Phase B step 2 asserts a clean tree, and the plan must be
-in the record before code exists. Then print the plan's status table (§S) —
+in the record before code exists. Then `git push -u origin epic/<epic-id>`,
+establishing the upstream every B8 push reuses. Then print the plan's status table (§S) —
 the operator's first sight of the run's shape. E2E flows in a dedicated final
 task (owned by the `e2e/` owner), with unit/component bars per earlier task, is
 the intended shape.
@@ -256,7 +260,11 @@ While ready tasks exist and bounds hold:
    per-task audit verdicts. The
    close record cannot live inside the commit it names; amending to fold it in
    changes the very sha it just recorded. Let it ride in a
-   `graph: close <id> @ <sha>` commit or in the next task's. Print the close
+   `graph: close <id> @ <sha>` commit or in the next task's. **Push the epic
+   branch now** — every close lands on origin before the next dispatch, so a
+   dead machine or a stopped run costs at most the task in flight. A failed
+   push never blocks the drain: note it, keep committing, retry at the next
+   close, and report any unpushed commits at epic close. Print the close
    line (§S). Otherwise loop back
    (max 2 per gate), then it's a stop condition.
 9. **File discovered work**: append new task records with `discovered-from`.
@@ -428,12 +436,14 @@ prevent.
 ## Bounds
 
 - One task in flight at a time.
-- One commit per task, never batched.
+- One commit per task, never batched — pushed at every close (B8), so the
+  remote branch trails the drain by at most one task.
 - 15 tasks closed per run — runaway backstop, not a target.
 - `max_loopbacks`: 2 per gate. Then stop and report the failing clauses.
 - Node types: 4. Parallel instances of one type count once.
 - Each delegation carries an explicit stop condition, never "until done".
-- Never commit to the default branch — in either mode; never merge; never push.
+- Never commit to or push the default branch — in either mode; never merge.
+  Epic-branch pushes are the loop's, the merge is the user's.
 
 ## Stop conditions — halt, dispatch nothing further, report
 
@@ -445,7 +455,8 @@ prevent.
   UX/semantics. Append `blocked` on the task in flight, `note`
   `needs-input: <the question>` — durable, so resume re-surfaces it; no task
   in flight → a `note` record carrying the question.
-- Anything requiring a push, a config change, or files outside the project.
+- Anything requiring a config change, files outside the project, or a push
+  beyond the epic branch.
 - Two consecutive infrastructure/API errors.
 - **A dispatch is rejected or interrupted by the operator.** One is enough — a
   denial is a decision, not an error, and re-sending the same prompt re-asks a
