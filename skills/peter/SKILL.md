@@ -11,7 +11,8 @@ description: >-
   branch — one task at a time through the same gates, one commit per task
   pushed as it lands,
   discovered work filed as new tasks for later, until the epic is done or a
-  stop condition fires. Use whenever the user asks to build, implement, or ship
+  stop condition fires. Speed tiers: `/peter quick <goal>` (gates 1–4, no
+  audits), `/peter mid <goal>` (audits once at close), default full. Use whenever the user asks to build, implement, or ship
   an app, feature, frontend, backend, or full-stack change and wants it
   production-ready, tested, e2e tested, reviewed, secure, accessible, or
   pixel-perfect — even if they never say "loop", "graph", "epic", or "audit".
@@ -40,6 +41,32 @@ verifier is a draft, and drafts are what this skill exists to prevent.
   `verdict=`) and treats declared counts as checksums. The boundary: ESON is
   the message format, never the state format — `graph.jsonl` stays JSONL,
   dispatch prompts stay plain text.
+
+## Speed — `quick` · `mid` · `full`
+
+A leading word on the goal picks the tier: `/peter quick <goal>`,
+`/peter mid <goal>`; no word is `full`. Record `speed: <tier>` in `spec.md`
+(epic) or the first status line (loop); the §S header carries it. A tier drops
+*verification*, never bars or code quality — every skip is reported as
+`skipped: speed=<tier>`, never folded into a pass.
+
+| | quick | mid | full |
+|---|---|---|---|
+| §G 1–4 unit/typecheck/lint/build | ✓ | ✓ | ✓ |
+| §G 5 E2E | epic close only | ✓ | ✓ |
+| per-task audits (§B6) | — | — | conditional |
+| `ui-auditor` breakpoints | — | 320/1280 | 320/768/1280 |
+| epic-close audit sweep (§C2) | — | ✓ | ✓ |
+| push (§B8) | epic close | per close | per close |
+
+- **quick** — prototypes and throwaway branches, never something merged to
+  default. Loop mode: E2E `skipped: speed=quick`. Epic: E2E once in Phase C
+  step 1; the epic `closed` record carries `audits: not_run: speed=quick` —
+  the one `not_run` that still counts as Done, because the operator chose it
+  up front — and it lands under Deviations.
+- **mid** — audits once, at epic close, full scope, `ui-auditor` at 320 and
+  1280px. Loop mode: audits at the end as in full, same two breakpoints.
+- **full** — everything below, the default.
 
 ## 0. Gate — loop or epic?
 
@@ -267,6 +294,7 @@ While ready tasks exist and bounds hold:
    a failing gate.
 6. **Conditional audits** (§A) — `security-auditor` only if the task touched
    auth, data, or external input; `ui-auditor` only if it rendered UI.
+   `quick`/`mid` skip this step (see Speed).
 7. **Adjudicate**: read `git diff` against the task's `criteria[]` — criteria
    written before the code, so this is not post-hoc rationalization.
 8. **Close or loop back.** All green and criteria met → one commit with the
@@ -279,7 +307,8 @@ While ready tasks exist and bounds hold:
    branch now** — every close lands on origin before the next dispatch, so a
    dead machine or a stopped run costs at most the task in flight. A failed
    push never blocks the drain: note it, keep committing, retry at the next
-   close, and report any unpushed commits at epic close. Print the close
+   close, and report any unpushed commits at epic close. `quick` pushes at
+   epic close only. Print the close
    line (§S). Otherwise loop back
    (max 2 per gate), then it's a stop condition.
 9. **File discovered work**: append new task records with `discovered-from`.
@@ -306,7 +335,8 @@ neither ever pauses the run.
 
 1. Full test suite once more — a regression here is a stop condition, not a
    footnote.
-2. Full audit sweep over every applicable scope, regardless of per-task audits:
+2. Full audit sweep over every applicable scope, regardless of per-task audits
+   — `quick` skips it (see Speed):
    `security-auditor` for auth, data, or external input; `ui-auditor` for
    rendered UI. Every applicable verdict must be `pass` to close the epic.
    Record a non-applicable scope as `not_applicable: <reason>` and an applicable
@@ -335,8 +365,8 @@ In order, on every iteration — cheap gates first, stop at the first failure:
 5. **E2E** — the real thing running, in whatever form the project type takes:
    browser, HTTP client, spawned binary, installed package, or the pipeline over
    real fixture data. Real database where one exists, migrated from scratch and
-   seeded. Skipped only when `spec.md` declares `no-e2e: <reason>` — reported as
-   skipped, never folded into a pass. Per-type definition, bar, and flake policy:
+   seeded. Skipped only when `spec.md` declares `no-e2e: <reason>` or
+   `speed: quick` — reported as skipped, never folded into a pass. Per-type definition, bar, and flake policy:
    `references/e2e-gate.md`
 
 A node never reports its own tests as passing. The parent runs the commands and
@@ -422,7 +452,7 @@ emits one line instead: `T3 done @ a1b2c3d — 3/5; next: T4`. The shape,
 exactly:
 
 ```
-**E-checkout** on `epic/E-checkout` — 2/5 done · backlog 1
+**E-checkout** on `epic/E-checkout` — full · 2/5 done · backlog 1
 
 | Task | Status |
 |---|---|

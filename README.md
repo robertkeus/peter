@@ -160,7 +160,9 @@ than `~/.claude`; the legacy `CLAUDE_HOME` variable remains supported.
 
 | Command | What it does |
 |---------|--------------|
-| `/peter <goal>` | Score the goal. Small → one enforced loop. Big → epic: work graph, dedicated branch, autonomous drain. |
+| `/peter <goal>` | Score the goal. Small → one enforced loop. Big → epic: work graph, dedicated branch, autonomous drain. Full verification. |
+| `/peter mid <goal>` | Same, audits once at close instead of per task; UI audit at two breakpoints. |
+| `/peter quick <goal>` | Unit/typecheck/lint/build only, E2E once at epic close, no audits. Prototypes, not merges. |
 
 ## Layout
 
@@ -214,6 +216,12 @@ runtime; delete the files and it's gone.
 The failure is routed to the builder that owns it, with the actual error text.
 It loops until green; a task that can't get there is filed as blocked and the
 drain moves on. Stop conditions hand control back instead of burning tokens.
+
+**Why does a run take so long?**
+Every task pays the full chain: E2E against a fresh database, then auditors
+that drive a browser over each route at three breakpoints, re-run after every
+fix. `/peter mid` audits once at close; `/peter quick` skips E2E per task and
+audits entirely. Skips are reported, never folded into a pass.
 
 **Why are the subagent replies so terse?**
 That's the house standard — see [Honey + ESON](#honey--eson).
