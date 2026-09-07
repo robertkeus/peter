@@ -23,7 +23,8 @@ Steps:
    (`zones/ui.md`) if named — design-system facts from prior audits.
 2. Start or navigate to the app. Audit the rendered page — source review alone
    cannot judge contrast, focus, or reflow.
-3. For each route in scope, at 320, 768, and 1280px:
+3. For each route in scope, at 320, 768, and 1280px (or the breakpoints the
+   dispatch prompt names):
    - `browser_snapshot` for the accessibility tree — names, roles, heading order,
      landmarks, labels.
    - Tab through the whole page with `browser_press_key`: every interactive element reachable, focus
